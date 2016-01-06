@@ -1,0 +1,48 @@
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'com.ns'
+version = '0.0.1'
+
+mainClassName = 'com.ns.Main'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    // Logger
+    compile (
+        'ch.qos.logback:logback-classic:1.1.2',
+    )
+
+    // Couchbase
+    compile (
+        'com.couchbase.client:java-client:2.2.1',
+    )
+    runtime (
+        'com.couchbase.client:core-io:1.2.1',
+        'io.reactivex:rxjava:1.0.2',
+    )
+}
+
+// manifest
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName,
+            'Implementation-Title': 'Connector',
+            'Implementation-Version': version
+    }
+
+    // 依存ライブラリのコピー
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+// startScripts
+startScripts {
+    applicationName = 'cb-performance'
+}
